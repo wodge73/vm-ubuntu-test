@@ -1,0 +1,48 @@
+bernetes VirtualMachineInstance Manifest (KubeVirt)
+apiVersion: kubevirt.io/v1
+kind: VirtualMachineInstance
+metadata:
+  name: ubuntu-desktop-vm
+spec:
+  domain:
+    devices:
+      disks:
+      - name: containerdisk
+        disk:
+          bus: virtio
+      - name: cloudinitdisk
+        disk:
+          bus: virtio
+      interfaces:
+      - name: default
+        masquerade: {}
+    resources:
+      requests:
+        memory: 2Gi # Adjust memory as needed for the GUI
+  volumes:
+  - name: containerdisk
+    containerDisk:
+      image: kubevirt/ubuntu-desktop-container-disk:v1.0 # Replace with an appropriate image with GUI support
+  - name: cloudinitdisk
+    cloudInitNoCloud:
+      userData: |
+        #cloud-config
+        password: ubuntu
+        chpasswd: { expire: False }
+        ssh_pwauth: True
+  networks:
+  - name: default
+    pod: {}
+---
+# Service to expose the VNC console for GUI access
+apiVersion: v1
+kind: Service
+metadata:
+  name: ubuntu-desktop-vnc-service
+spec:
+  selector:
+    kubevirt.io/domain: ubuntu-desktop-vm # Matches the VM's domain name in KubeVirt
+  ports:
+  - protocol: TCP
+    port: 5900 # VNC Port for GUI access
+    targetPort: 5900 # Target port inside the VM instance 
