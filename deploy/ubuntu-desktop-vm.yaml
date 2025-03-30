@@ -1,4 +1,3 @@
-bernetes VirtualMachineInstance Manifest (KubeVirt)
 apiVersion: kubevirt.io/v1
 kind: VirtualMachineInstance
 metadata:
