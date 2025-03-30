@@ -30,6 +30,6 @@ spec:
         - cloudInitNoCloud:
             userData: |
               #cloud-config
-              password: ThisIsReallyUnsafeButThisIsJustADemo
+              password: spud101!
               chpasswd: { expire: False }
           name: cloudinitdisk
